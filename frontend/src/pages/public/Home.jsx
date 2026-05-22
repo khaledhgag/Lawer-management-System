@@ -29,7 +29,7 @@ export default function Home() {
     SettingsAPI.get().then(setSettings).catch(() => {});
   }, []);
 
-  const aboutSrc = settings?.logoUrl ? assetUrl(settings.logoUrl) : homeImages.about;
+  const aboutSrc = homeImages.about;
   return (
     <div>
       {/* HERO */}
@@ -113,19 +113,11 @@ export default function Home() {
             <HighlightList className="mt-4" itemClass="text-white/70" emojiClass="text-xl" />
             <SocialLinks social={settings?.social} className="mt-5" />
           </div>
-          <div
-            className={`rounded-2xl bg-ink-800 border border-white/5 overflow-hidden relative ${
-              settings?.logoUrl
-                ? 'aspect-square w-full max-w-sm mx-auto md:mx-0 md:max-w-md'
-                : 'aspect-video w-full'
-            }`}
-          >
+          <div className="rounded-2xl bg-ink-800 border border-white/5 overflow-hidden relative aspect-video w-full">
             <HomeImage
               src={aboutSrc}
-              alt={settings?.logoUrl ? 'شعار المكتب' : 'صورة المكتب'}
-              className={`absolute inset-0 w-full h-full ${
-                settings?.logoUrl ? 'object-contain p-8 md:p-10' : 'object-cover'
-              }`}
+              alt="صورة المكتب"
+              className="absolute inset-0 w-full h-full object-cover"
               fallback={aboutFallback}
             />
           </div>

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { SettingsAPI, assetUrl } from '../../services/api';
+import { SettingsAPI } from '../../services/api';
 
 export default function Settings() {
   const [s, setS] = useState(null);
-  const [logo, setLogo] = useState(null);
 
   useEffect(() => { SettingsAPI.get().then(setS); }, []);
   if (!s) return null;
@@ -14,17 +13,7 @@ export default function Settings() {
   const save = async (e) => {
     e.preventDefault();
     try {
-      if (logo) {
-        const fd = new FormData();
-        Object.entries(s).forEach(([k,v]) => {
-          if (k === 'social') fd.append('social', JSON.stringify(v));
-          else if (typeof v === 'string') fd.append(k, v);
-        });
-        fd.append('logo', logo);
-        await SettingsAPI.update(fd);
-      } else {
-        await SettingsAPI.update(s);
-      }
+      await SettingsAPI.update(s);
       toast.success('تم الحفظ');
     } catch { toast.error('خطأ'); }
   };
@@ -40,12 +29,8 @@ export default function Settings() {
         <div className="md:col-span-2"><label className="label">ساعات العمل</label><input className="input" value={s.officeHours||''} onChange={e=>set('officeHours',e.target.value)} placeholder="الأحد – الخميس: 10 ص – 6 م" /></div>
         <div className="md:col-span-2"><label className="label">نبذة عن المكتب</label><textarea rows="4" className="input" value={s.about||''} onChange={e=>set('about',e.target.value)} /></div>
         <div className="md:col-span-2">
-          <label className="label">شعار المكتب</label>
-          <input type="file" accept="image/*" onChange={e=>setLogo(e.target.files[0])} className="input file:bg-gold file:text-ink-900 file:border-0 file:px-3 file:py-1 file:rounded file:ml-2 file:font-bold" />
-          {s.logoUrl && <img src={assetUrl(s.logoUrl)} alt="logo" className="mt-3 h-20 rounded" />}
-          <p className="text-xs text-white/40 mt-2">
-            شعار «من نحن»: مربع <b className="text-white/60">512×512</b> أو <b className="text-white/60">800×800</b> px (PNG شفاف أفضل).
-            بدون شعار: ضع صورة عريضة <b className="text-white/60">1280×720</b> (16:9) في public/images/home/about.jpg —
+          <p className="text-xs text-white/40">
+            صورة «من نحن»: ضع صورة عريضة <b className="text-white/60">1280×720</b> (16:9) في public/images/home/about.jpg —
             الهيرو: <b className="text-white/60">900×1125</b> (4:5) في hero.jpg
           </p>
         </div>
