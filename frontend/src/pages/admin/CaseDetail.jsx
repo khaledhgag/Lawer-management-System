@@ -6,6 +6,7 @@ import Skeleton from '../../components/Skeleton.jsx';
 import CopyButton from '../../components/CopyButton.jsx';
 import { waTemplates } from '../../config/waTemplates';
 import { buildWhatsAppLink, clientSummaryText, formatCaseUpdateMessage, openWhatsApp } from '../../utils/whatsapp';
+import { assetUrl } from '../../services/api';
 
 export default function CaseDetail() {
   const { id } = useParams();
@@ -178,7 +179,7 @@ export default function CaseDetail() {
         ) : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
             {c.files.map((f) => (
-              <a key={f._id} href={f.url} download target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-ink-700 hover:bg-ink-600 flex items-center gap-3">
+              <a key={f._id} href={assetUrl(f.url)} download target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-ink-700 hover:bg-ink-600 flex items-center gap-3">
                 <span className="text-2xl">📄</span>
                 <div className="flex-1 truncate"><div className="text-sm truncate">{f.name}</div></div>
               </a>

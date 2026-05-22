@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SettingsAPI } from '../services/api';
+import { SettingsAPI, assetUrl } from '../services/api';
 import HighlightList from './HighlightList.jsx';
 import SocialLinks from './SocialLinks.jsx';
 
@@ -17,7 +17,7 @@ export default function Footer() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             {s?.logoUrl ? (
-              <img src={s.logoUrl} alt="" className="w-9 h-9 rounded-full object-cover border border-gold" />
+              <img src={assetUrl(s.logoUrl)} alt="" className="w-9 h-9 rounded-full object-cover border border-gold" />
             ) : (
               <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold flex items-center justify-center text-gold">⚖</div>
             )}

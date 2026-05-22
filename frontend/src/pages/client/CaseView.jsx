@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Track } from '../../services/api';
+import { Track, Notifications } from '../../services/api';
 import Skeleton from '../../components/Skeleton.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { assetUrl } from '../../services/api';
 
 export default function CaseView() {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export default function CaseView() {
       if (user?.role === 'client') {
         const list = await Track.mine();
         setCases(list); setActive(list[0] || null);
-        Track.notifications().then(setNotes).catch(()=>{});
+        Notifications.list().then(setNotes).catch(() => {});
       } else {
         setCases([]);
       }
@@ -97,7 +98,7 @@ export default function CaseView() {
         {(!c.files || c.files.length === 0) ? <EmptyState title="لا توجد ملفات" icon="📂" /> : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
             {c.files.map(f => (
-              <a key={f._id} href={f.url} download={f.name} target="_blank" rel="noopener noreferrer" className="p-4 rounded-lg bg-ink-700 hover:bg-ink-600 border border-white/5 transition flex items-center gap-3">
+              <a key={f._id} href={assetUrl(f.url)} download={f.name} target="_blank" rel="noopener noreferrer" className="p-4 rounded-lg bg-ink-700 hover:bg-ink-600 border border-white/5 transition flex items-center gap-3">
                 <div className="text-2xl">📄</div>
                 <div className="flex-1 truncate">
                   <div className="text-sm font-semibold truncate">{f.name}</div>

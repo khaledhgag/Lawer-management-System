@@ -1,6 +1,24 @@
 import axios from 'axios';
 
-const api = axios.create({ baseURL: '/api' });
+/** Server root without trailing slash — from VITE_API_URL */
+export const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
+export const apiBaseURL = API_URL ? `${API_URL}/api` : '/api';
+
+export const uploadsBaseURL = API_URL ? `${API_URL}/uploads` : '/uploads';
+
+/** Backend paths like /uploads/... → full URL on Vercel */
+export function assetUrl(path) {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  if (!API_URL) return path;
+  return `${API_URL}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+const api = axios.create({
+  baseURL: apiBaseURL,
+  withCredentials: true,
+});
 
 api.interceptors.request.use((cfg) => {
   const t = localStorage.getItem('token');
@@ -15,12 +33,14 @@ api.interceptors.response.use(
 
 export default api;
 
+/** POST /api/auth/... */
 export const Auth = {
   adminLogin: (d) => api.post('/auth/admin/login', d).then((r) => r.data),
   clientLogin: (d) => api.post('/auth/client/login', d).then((r) => r.data),
   changePassword: (d) => api.post('/auth/client/change-password', d).then((r) => r.data),
 };
 
+/** POST/GET /api/track/... */
 export const Track = {
   byCode: (d) => api.post('/track/code', d).then((r) => r.data),
   forgotPassword: (d) => api.post('/track/forgot-password', d).then((r) => r.data),
@@ -28,6 +48,7 @@ export const Track = {
   notifications: () => api.get('/track/notifications').then((r) => r.data),
 };
 
+/** GET/POST/PUT/DELETE /api/cases/... */
 export const Cases = {
   stats: () => api.get('/cases/stats').then((r) => r.data),
   list: (q = '', archived = false) =>
@@ -51,10 +72,12 @@ export const Cases = {
   remove: (id) => api.delete(`/cases/${id}`).then((r) => r.data),
 };
 
+/** GET /api/calendar/... */
 export const Calendar = {
   events: (params) => api.get('/calendar/events', { params }).then((r) => r.data),
 };
 
+/** POST/GET /api/consultations/... */
 export const Consultations = {
   create: (d) => api.post('/consultations', d).then((r) => r.data),
   list: (params = {}) => api.get('/consultations', { params }).then((r) => r.data),
@@ -64,6 +87,7 @@ export const Consultations = {
     api.get(`/consultations/${id}/whatsapp-link`, { params: { target } }).then((r) => r.data),
 };
 
+/** GET/PUT /api/settings */
 export const SettingsAPI = {
   get: () => api.get('/settings').then((r) => r.data),
   update: (d) => {
@@ -72,4 +96,9 @@ export const SettingsAPI = {
     }
     return api.put('/settings', d).then((r) => r.data);
   },
+};
+
+/** Alias — notifications for logged-in clients */
+export const Notifications = {
+  list: () => Track.notifications(),
 };

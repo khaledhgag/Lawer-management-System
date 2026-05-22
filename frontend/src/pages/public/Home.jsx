@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { SettingsAPI } from '../../services/api';
+import { SettingsAPI, assetUrl } from '../../services/api';
 import { homeImages } from '../../config/homeImages';
 import HomeImage from '../../components/HomeImage';
 import HighlightList from '../../components/HighlightList.jsx';
@@ -29,7 +29,7 @@ export default function Home() {
     SettingsAPI.get().then(setSettings).catch(() => {});
   }, []);
 
-  const aboutSrc = settings?.logoUrl || homeImages.about;
+  const aboutSrc = settings?.logoUrl ? assetUrl(settings.logoUrl) : homeImages.about;
   return (
     <div>
       {/* HERO */}

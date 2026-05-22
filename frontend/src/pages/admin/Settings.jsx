@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { SettingsAPI } from '../../services/api';
+import { SettingsAPI, assetUrl } from '../../services/api';
 
 export default function Settings() {
   const [s, setS] = useState(null);
@@ -42,7 +42,7 @@ export default function Settings() {
         <div className="md:col-span-2">
           <label className="label">شعار المكتب</label>
           <input type="file" accept="image/*" onChange={e=>setLogo(e.target.files[0])} className="input file:bg-gold file:text-ink-900 file:border-0 file:px-3 file:py-1 file:rounded file:ml-2 file:font-bold" />
-          {s.logoUrl && <img src={s.logoUrl} alt="logo" className="mt-3 h-20 rounded" />}
+          {s.logoUrl && <img src={assetUrl(s.logoUrl)} alt="logo" className="mt-3 h-20 rounded" />}
           <p className="text-xs text-white/40 mt-2">
             شعار «من نحن»: مربع <b className="text-white/60">512×512</b> أو <b className="text-white/60">800×800</b> px (PNG شفاف أفضل).
             بدون شعار: ضع صورة عريضة <b className="text-white/60">1280×720</b> (16:9) في public/images/home/about.jpg —
