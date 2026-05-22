@@ -10,7 +10,22 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
+const allowedOrigins = [
+  'https://eslamelattar.com',
+  'https://www.eslamelattar.com',
+  'https://lawer-management-system.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS blocked'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
