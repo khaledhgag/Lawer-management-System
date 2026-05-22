@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { font-family: 'Cairo', sans-serif; background: #0A0A0B; }
+* { -webkit-tap-highlight-color: transparent; }
+
+@layer components {
+  .btn-gold { @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gold text-ink-900 font-bold transition-all hover:bg-gold-light hover:shadow-gold active:scale-95; }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-gold/40 text-gold hover:bg-gold/10 transition-all; }
+  .card { @apply bg-ink-800 border border-white/5 rounded-2xl p-6; }
+  .input { @apply w-full bg-ink-700 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/40 outline-none focus:border-gold transition; }
+  .label { @apply block mb-2 text-sm text-white/70 font-semibold; }
+  .badge { @apply inline-block px-3 py-1 rounded-full text-xs font-semibold; }
+}
+
+/* skeleton */
+.skeleton { background: linear-gradient(90deg, #1A1A1D 0%, #26262B 50%, #1A1A1D 100%); background-size: 200% 100%; animation: sk 1.2s infinite; }
+@keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
