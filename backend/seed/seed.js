@@ -12,9 +12,9 @@ const Settings = require('../models/Settings');
   console.log('seeding...');
   await Promise.all([Admin.deleteMany({}), Client.deleteMany({}), Case.deleteMany({}), Consultation.deleteMany({}), Settings.deleteMany({})]);
 
-  await Admin.create({ username: 'Esalmashraf', password: '01100722665Eslam@@esso', name: 'المستشار اسلام اشرف العطار' });
+  await Admin.create({ username: 'EslamAshrafAlattar', password: 'Samsungs4zoom', name: 'المستشار اسلام اشرف العطار' });
 
 
-  console.log('✅ done. Admin: Esalmashraf / 01100722665Eslam@@esso');
+  console.log('✅ done. Admin: EslamAshrafAlattar / Samsungs4zoom');
   process.exit(0);
 })();
