@@ -13,12 +13,13 @@ async function checkUpcomingSessions() {
   }
 
   const now = new Date();
-  const nextDay = new Date(now);
-  nextDay.setDate(nextDay.getDate() + 1);
+  const windowDays = Number(process.env.SESSION_REMINDER_WINDOW_DAYS || 3);
+  const nextWindow = new Date(now);
+  nextWindow.setDate(nextWindow.getDate() + windowDays);
 
   const upcomingCases = await Case.find({
     archived: { $ne: true },
-    nextSessionDate: { $gte: now, $lte: nextDay },
+    nextSessionDate: { $gte: now, $lte: nextWindow },
     $or: [
       { nextSessionReminderSentAt: { $exists: false } },
       { nextSessionReminderSentAt: null },
@@ -33,7 +34,8 @@ async function checkUpcomingSessions() {
     }) : 'غير محدد';
 
     const message = telegram.formatSystemAlertMessage(
-      `تذكير: جلسة قريبة للقضية ${c.caseNumber}`,
+      'أنا مساعدك الشخصي وهنظملك مواعيدك',
+      `تذكير: جلسة قريبة للقضية ${c.caseNumber}\n\n` +
       `العميل: ${c.client?.name || 'غير معروف'}\n` +
       `الهاتف: ${c.client?.phone || 'غير متوفر'}\n` +
       `المحكمة: ${c.court || 'غير محددة'}\n` +
