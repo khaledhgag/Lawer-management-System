@@ -113,7 +113,7 @@ export default function Home() {
             <HighlightList className="mt-4" itemClass="text-white/70" emojiClass="text-xl" />
             <SocialLinks social={settings?.social} className="mt-5" />
           </div>
-          <div className="rounded-2xl bg-ink-800 border border-white/5 overflow-hidden relative aspect-video w-full">
+          <div className="rounded-2xl bg-ink-800 border border-white/5 overflow-hidden relative aspect-square w-full max-w-sm mx-auto md:mx-0">
             <HomeImage
               src={aboutSrc}
               alt="صورة المكتب"

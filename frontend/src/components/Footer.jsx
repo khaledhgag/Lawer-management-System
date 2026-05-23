@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SettingsAPI, assetUrl } from '../services/api';
+import { SettingsAPI } from '../services/api';
+import { homeImages } from '../config/homeImages';
 import HighlightList from './HighlightList.jsx';
 import SocialLinks from './SocialLinks.jsx';
 
@@ -16,11 +17,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-8">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            {s?.logoUrl ? (
-              <img src={assetUrl(s.logoUrl)} alt="" className="w-9 h-9 rounded-full object-cover border border-gold" />
-            ) : (
-              <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold flex items-center justify-center text-gold">⚖</div>
-            )}
+            <img src={homeImages.about} alt="" className="w-9 h-9 rounded-full object-cover border border-gold" />
             <span className="font-bold">{s?.officeName || 'مكتب المحاماة'}</span>
           </div>
           {s?.about && (

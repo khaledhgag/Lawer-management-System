@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SettingsAPI, assetUrl } from '../services/api';
+import { SettingsAPI } from '../services/api';
+import { homeImages } from '../config/homeImages';
 
 export default function Navbar() {
   const [s, setS] = useState(null);
@@ -31,11 +32,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 min-w-0">
-          {s?.logoUrl ? (
-            <img src={assetUrl(s.logoUrl)} alt="" className="w-9 h-9 rounded-full object-cover border border-gold" />
-          ) : (
-            <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold flex items-center justify-center text-gold shrink-0">⚖</div>
-          )}
+          <img src={homeImages.about} alt="" className="w-9 h-9 rounded-full object-cover border border-gold" />
           <span className="font-bold tracking-wide truncate text-sm md:text-base">
             {s?.officeName || 'مكتب المحاماة'}
           </span>
