@@ -8,6 +8,7 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
+const { startSessionReminderJob } = require('./services/sessionReminderService');
 
 // Middlewares
 const allowedOrigins = [
@@ -47,5 +48,8 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`✅ Server on http://localhost:${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`✅ Server on http://localhost:${PORT}`);
+    startSessionReminderJob();
+  });
 });

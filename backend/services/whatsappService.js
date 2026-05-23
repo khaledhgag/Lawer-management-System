@@ -31,8 +31,12 @@ function formatReplyMessage(c, reply = {}) {
     `الوقت: ${appointmentTime || '—'}`,
     fees != null && fees !== '' ? `الرسوم: ${fees} جنيه` : null,
     '',
-    'مع تحيات مكتب المحاماة',
+    'مع تحيات مكتب المستشار اسلام اشرف العطار',
   ].filter((x) => x !== null).join('\n');
+}
+
+function formatSystemAlertMessage(title, details = '') {
+  return [title, details].filter(Boolean).join('\n\n');
 }
 
 function isCloudApiEnabled() {
@@ -86,6 +90,7 @@ module.exports = {
   buildLink,
   formatNewConsultationMessage,
   formatReplyMessage,
+  formatSystemAlertMessage,
   sendMessage,
   isCloudApiEnabled,
 };

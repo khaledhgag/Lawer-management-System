@@ -2,6 +2,7 @@ const Consultation = require('../models/Consultation');
 const Settings = require('../models/Settings');
 const { sendEmail } = require('../services/emailService');
 const wa = require('../services/whatsappService');
+const telegram = require('../services/telegramService');
 const { consultationRequestNumber } = require('../utils/generate');
 
 async function getOfficePhone() {
@@ -23,9 +24,9 @@ exports.create = async (req, res, next) => {
     let whatsappOffice = null;
     if (officePhone) {
       whatsappOffice = { link: wa.buildLink(officePhone, alertText) };
-      if (process.env.WHATSAPP_AUTO_NOTIFY_OFFICE === 'true') {
-        whatsappOffice.send = await wa.sendMessage(officePhone, alertText);
-      }
+    }
+    if (process.env.TELEGRAM_AUTO_NOTIFY_OFFICE === 'true') {
+      await telegram.sendMessage(alertText);
     }
 
     res.status(201).json({ ...c.toObject(), whatsappOffice });
@@ -112,6 +113,10 @@ exports.reply = async (req, res, next) => {
 
     if (shouldSend && c.phone) {
       whatsapp = { ...whatsapp, ...(await wa.sendMessage(c.phone, waText)) };
+    }
+
+    if (process.env.TELEGRAM_AUTO_NOTIFY_OFFICE === 'true') {
+      await telegram.sendMessage(`رد الاستشارة: ${c.fullName}\n${waText}`);
     }
 
     res.json({ ...c.toObject(), whatsapp });

@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const { generateCredentials } = require('../utils/generate');
 const { buildCasePdf } = require('../utils/pdfCase');
 const { sendEmail } = require('../services/emailService');
+const telegram = require('../services/telegramService');
 
 exports.searchClients = async (req, res, next) => {
   try {
@@ -53,6 +54,11 @@ exports.get = async (req, res, next) => {
   } catch (e) { next(e); }
 };
 
+async function sendOfficeAlert(message) {
+  if (process.env.TELEGRAM_AUTO_NOTIFY_OFFICE !== 'true') return null;
+  return telegram.sendMessage(message);
+}
+
 exports.create = async (req, res, next) => {
   try {
     const { clientId, clientName, phone, email, caseType, court, nextSessionDate, currentStatus, notes, caseNumber: requestedCaseNumber } = req.body;
@@ -87,6 +93,12 @@ exports.create = async (req, res, next) => {
       updates: [{ title: 'تم فتح القضية', notes: 'تم تسجيل القضية في النظام' }],
     });
 
+    const createDetails = c.nextSessionDate
+      ? `الجلـسة بتاريخ ${new Date(c.nextSessionDate).toLocaleDateString('ar-EG')} ${new Date(c.nextSessionDate).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`
+      : 'لم يتم تحديد موعد جلسة بعد';
+    const msg = telegram.formatSystemAlertMessage(`قضية جديدة: ${caseNumber}`, createDetails);
+    await sendOfficeAlert(msg);
+
     res.status(201).json({ case: c, credentials });
   } catch (e) { next(e); }
 };
@@ -96,7 +108,35 @@ exports.update = async (req, res, next) => {
     const allowed = ['currentStatus', 'nextSessionDate', 'lawyerNotes', 'internalNotes', 'court', 'caseType', 'archived'];
     const patch = {};
     allowed.forEach((k) => { if (req.body[k] !== undefined) patch[k] = req.body[k]; });
-    const c = await Case.findByIdAndUpdate(req.params.id, patch, { new: true }).populate('client');
+
+    const c = await Case.findById(req.params.id).populate('client', 'name phone');
+    if (!c) return res.status(404).json({ message: 'غير موجود' });
+
+    const oldSession = c.nextSessionDate ? c.nextSessionDate.toISOString() : '';
+    const newSession = patch.nextSessionDate ? new Date(patch.nextSessionDate).toISOString() : '';
+    const sessionChanged = patch.nextSessionDate && oldSession !== newSession;
+
+    Object.assign(c, patch);
+    if (sessionChanged) {
+      c.nextSessionReminderSentAt = undefined;
+    }
+    await c.save();
+
+    const changes = [];
+    if (sessionChanged) {
+      changes.push(`تم تحديث تاريخ الجلسة إلى ${new Date(c.nextSessionDate).toLocaleDateString('ar-EG')} ${new Date(c.nextSessionDate).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`);
+    }
+    if (patch.currentStatus) changes.push(`الحالة: ${patch.currentStatus}`);
+    if (patch.court) changes.push(`المحكمة: ${patch.court}`);
+    if (patch.caseType) changes.push(`نوع القضية: ${patch.caseType}`);
+    if (patch.lawyerNotes) changes.push(`ملاحظات المحامي: ${patch.lawyerNotes}`);
+    if (patch.internalNotes) changes.push(`ملاحظات داخلية جديدة`);
+
+    if (changes.length) {
+      const msg = telegram.formatSystemAlertMessage(`تحديث على القضية ${c.caseNumber}`, changes.join('\n'));
+      await sendOfficeAlert(msg);
+    }
+
     res.json(c);
   } catch (e) { next(e); }
 };
@@ -118,6 +158,7 @@ exports.addUpdate = async (req, res, next) => {
 
     const msg = `تحديث جديد على قضيتك: ${title}`;
     await Notification.create({ client: c.client._id, case: c._id, message: msg });
+    await sendOfficeAlert(telegram.formatSystemAlertMessage(`تحديث على القضية ${c.caseNumber}`, `${msg}${notes ? `\n\n${notes}` : ''}`));
 
     if (c.client?.email) {
       await sendEmail({
@@ -143,11 +184,13 @@ exports.addFile = async (req, res, next) => {
       size: req.file.size,
     });
     await c.save();
+    const fileMsg = 'تم إضافة ملف جديد إلى قضيتك';
     await Notification.create({
       client: c.client,
       case: c._id,
-      message: 'تم إضافة ملف جديد إلى قضيتك',
+      message: fileMsg,
     });
+    await sendOfficeAlert(telegram.formatSystemAlertMessage(`ملف جديد على القضية ${c.caseNumber}`, fileMsg));
     res.json(c);
   } catch (e) { next(e); }
 };

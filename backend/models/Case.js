@@ -22,6 +22,7 @@ const caseSchema = new mongoose.Schema({
   court:         { type: String },
   currentStatus: { type: String, default: 'قيد المراجعة' },
   nextSessionDate:{ type: Date },
+  nextSessionReminderSentAt: { type: Date },
   lawyerNotes:   { type: String },
   internalNotes: { type: String, default: '' },
   archived:      { type: Boolean, default: false },
