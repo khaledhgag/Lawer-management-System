@@ -7,7 +7,7 @@ import { buildWhatsAppLink, formatNewCaseMessage, openWhatsApp } from '../../uti
 const TYPES = ['مدني','جنائي','أسرة','شركات','عقارات','أخرى'];
 
 export default function NewCase() {
-  const [form, setForm] = useState({ clientName:'', phone:'', email:'', caseType:'مدني', court:'', nextSessionDate:'', currentStatus:'قيد المراجعة', notes:'' });
+  const [form, setForm] = useState({ clientName:'', phone:'', email:'', caseNumber:'', caseType:'مدني', court:'', nextSessionDate:'', currentStatus:'قيد المراجعة', notes:'' });
   const [done, setDone] = useState(null);
   const [loading, setLoading] = useState(false);
   const nav = useNavigate();
@@ -108,6 +108,7 @@ export default function NewCase() {
       <h2 className="text-2xl font-black mb-6">إضافة قضية جديدة</h2>
       <form onSubmit={submit} className="card grid md:grid-cols-2 gap-4">
         <div><label className="label">اسم العميل *</label><input className="input" value={form.clientName} onChange={c('clientName')} required /></div>
+        <div><label className="label">رقم القضية *</label><input className="input" value={form.caseNumber} onChange={c('caseNumber')} required placeholder="مثال: 2026/12345" /></div>
         <div><label className="label">رقم الهاتف *</label><input className="input" value={form.phone} onChange={c('phone')} required placeholder="01xxxxxxxxx" /></div>
         <div><label className="label">البريد الإلكتروني</label><input type="email" className="input" value={form.email} onChange={c('email')} /></div>
         <div><label className="label">نوع القضية *</label><select className="input" value={form.caseType} onChange={c('caseType')}>{TYPES.map(t=><option key={t}>{t}</option>)}</select></div>

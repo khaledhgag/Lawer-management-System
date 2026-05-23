@@ -41,8 +41,9 @@ exports.get = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { clientName, phone, email, caseType, court, nextSessionDate, currentStatus, notes } = req.body;
-    const { username, password, trackingCode, caseNumber } = generateCredentials(clientName);
+    const { clientName, phone, email, caseType, court, nextSessionDate, currentStatus, notes, caseNumber: requestedCaseNumber } = req.body;
+    const { username, password, trackingCode, caseNumber: generatedCaseNumber } = generateCredentials(clientName);
+    const caseNumber = requestedCaseNumber?.trim() || generatedCaseNumber;
 
     const hashed = await bcrypt.hash(password, 10);
     const client = await Client.create({ name: clientName, phone, email, username, password: hashed });
