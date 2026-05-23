@@ -5,6 +5,7 @@ const c = require('../controllers/caseController');
 
 r.use(authRequired(['admin']));
 r.get('/stats', c.stats);
+r.get('/clients/search', c.searchClients);
 r.get('/', c.list);
 r.post('/', c.create);
 r.get('/:id/pdf', c.exportPdf);

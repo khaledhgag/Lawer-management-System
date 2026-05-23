@@ -45,12 +45,14 @@ export const Track = {
   byCode: (d) => api.post('/track/code', d).then((r) => r.data),
   forgotPassword: (d) => api.post('/track/forgot-password', d).then((r) => r.data),
   mine: () => api.get('/track/mine').then((r) => r.data),
+  getCase: (id) => api.get(`/track/mine/${id}`).then((r) => r.data),
   notifications: () => api.get('/track/notifications').then((r) => r.data),
 };
 
 /** GET/POST/PUT/DELETE /api/cases/... */
 export const Cases = {
   stats: () => api.get('/cases/stats').then((r) => r.data),
+  searchClients: (q) => api.get('/cases/clients/search', { params: { q } }).then((r) => r.data),
   list: (q = '', archived = false) =>
     api.get('/cases', { params: { q, archived: archived ? 'true' : 'false' } }).then((r) => r.data),
   get: (id) => api.get(`/cases/${id}`).then((r) => r.data),

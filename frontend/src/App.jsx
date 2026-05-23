@@ -6,6 +6,7 @@ import Home from './pages/public/Home.jsx';
 import TrackWelcome from './pages/client/TrackWelcome.jsx';
 import TrackLogin from './pages/client/TrackLogin.jsx';
 import CaseView from './pages/client/CaseView.jsx';
+import MyCasesList from './pages/client/MyCasesList.jsx';
 import BookConsultation from './pages/public/BookConsultation.jsx';
 import Contact from './pages/public/Contact.jsx';
 import TrackForgot from './pages/client/TrackForgot.jsx';
@@ -30,6 +31,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/track" element={<TrackWelcome />} />
         <Route path="/track/login" element={<TrackLogin />} />
+        <Route path="/track/cases" element={<MyCasesList />} />
+        <Route path="/track/case/:id" element={<CaseView />} />
         <Route path="/track/case" element={<CaseView />} />
         <Route path="/book" element={<BookConsultation />} />
         <Route path="/contact" element={<Contact />} />

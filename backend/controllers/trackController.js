@@ -24,6 +24,15 @@ exports.myCases = async (req, res, next) => {
   } catch (e) { next(e); }
 };
 
+exports.myCaseById = async (req, res, next) => {
+  try {
+    const c = await Case.findOne({ _id: req.params.id, client: req.user.id, archived: { $ne: true } })
+      .populate('client', 'name phone email');
+    if (!c) return res.status(404).json({ message: 'القضية غير موجودة' });
+    res.json(sanitizeCase(c));
+  } catch (e) { next(e); }
+};
+
 exports.myNotifications = async (req, res, next) => {
   try {
     const list = await Notification.find({ client: req.user.id }).sort('-createdAt').limit(50);

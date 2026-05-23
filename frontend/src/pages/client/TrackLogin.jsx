@@ -18,7 +18,7 @@ export default function TrackLogin() {
     try {
       const r = await Auth.clientLogin(acc);
       login(r.token, { ...r.client, role:'client' });
-      nav('/track/case');
+      nav('/track/cases');
     } catch (e) { toast.error(e?.response?.data?.message || 'فشل الدخول'); }
     finally { setLoading(false); }
   };

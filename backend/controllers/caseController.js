@@ -6,6 +6,20 @@ const { generateCredentials } = require('../utils/generate');
 const { buildCasePdf } = require('../utils/pdfCase');
 const { sendEmail } = require('../services/emailService');
 
+exports.searchClients = async (req, res, next) => {
+  try {
+    const q = req.query.q || '';
+    if (!q) return res.json([]);
+    const clients = await Client.find({
+      $or: [
+        { name: { $regex: q, $options: 'i' } },
+        { phone: { $regex: q, $options: 'i' } },
+      ],
+    }).select('_id name phone email username').limit(10);
+    res.json(clients);
+  } catch (e) { next(e); }
+};
+
 exports.list = async (req, res, next) => {
   try {
     const q = req.query.q;
@@ -41,12 +55,25 @@ exports.get = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { clientName, phone, email, caseType, court, nextSessionDate, currentStatus, notes, caseNumber: requestedCaseNumber } = req.body;
-    const { username, password, trackingCode, caseNumber: generatedCaseNumber } = generateCredentials(clientName);
+    const { clientId, clientName, phone, email, caseType, court, nextSessionDate, currentStatus, notes, caseNumber: requestedCaseNumber } = req.body;
+    const { trackingCode, caseNumber: generatedCaseNumber } = generateCredentials(clientName || 'client');
     const caseNumber = requestedCaseNumber?.trim() || generatedCaseNumber;
 
-    const hashed = await bcrypt.hash(password, 10);
-    const client = await Client.create({ name: clientName, phone, email, username, password: hashed });
+    let client;
+    let credentials;
+
+    if (clientId) {
+      // attach to existing client — no new login credentials
+      client = await Client.findById(clientId);
+      if (!client) return res.status(404).json({ message: 'العميل غير موجود' });
+      credentials = { username: client.username, trackingCode, caseNumber, existingClient: true };
+    } else {
+      // new client — generate full credentials
+      const { username, password } = generateCredentials(clientName);
+      const hashed = await bcrypt.hash(password, 10);
+      client = await Client.create({ name: clientName, phone, email, username, password: hashed });
+      credentials = { username, password, trackingCode, caseNumber };
+    }
 
     const c = await Case.create({
       client: client._id,
@@ -60,10 +87,7 @@ exports.create = async (req, res, next) => {
       updates: [{ title: 'تم فتح القضية', notes: 'تم تسجيل القضية في النظام' }],
     });
 
-    res.status(201).json({
-      case: c,
-      credentials: { username, password, trackingCode, caseNumber },
-    });
+    res.status(201).json({ case: c, credentials });
   } catch (e) { next(e); }
 };
 
