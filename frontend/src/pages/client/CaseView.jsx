@@ -150,20 +150,33 @@ export default function CaseView() {
         ) : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
             {c.files.map((f) => (
-              <a
-                key={f._id}
-                href={assetUrl(f.url)}
-                download={f.name}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 rounded-lg bg-ink-700 hover:bg-ink-600 border border-white/5 transition flex items-center gap-3"
-              >
-                <div className="text-2xl">📄</div>
-                <div className="flex-1 truncate">
-                  <div className="text-sm font-semibold truncate">{f.name}</div>
-                  <div className="text-xs text-white/40">{(f.size / 1024).toFixed(1)} KB — تنزيل</div>
+              f.url === '[FILE_UNAVAILABLE]' ? (
+                <div
+                  key={f._id}
+                  className="p-4 rounded-lg bg-ink-700 opacity-50 cursor-not-allowed border border-white/5 flex items-center gap-3"
+                >
+                  <div className="text-2xl">📄</div>
+                  <div className="flex-1 truncate">
+                    <div className="text-sm font-semibold truncate">{f.name}</div>
+                    <div className="text-xs text-orange-400">غير متاح</div>
+                  </div>
                 </div>
-              </a>
+              ) : (
+                <a
+                  key={f._id}
+                  href={assetUrl(f.url)}
+                  download={f.name}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-4 rounded-lg bg-ink-700 hover:bg-ink-600 border border-white/5 transition flex items-center gap-3"
+                >
+                  <div className="text-2xl">📄</div>
+                  <div className="flex-1 truncate">
+                    <div className="text-sm font-semibold truncate">{f.name}</div>
+                    <div className="text-xs text-white/40">{(f.size / 1024).toFixed(1)} KB — تنزيل</div>
+                  </div>
+                </a>
+              )
             ))}
           </div>
         )}

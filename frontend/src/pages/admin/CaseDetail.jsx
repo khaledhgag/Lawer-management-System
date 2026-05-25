@@ -179,10 +179,20 @@ export default function CaseDetail() {
         ) : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
             {c.files.map((f) => (
-              <a key={f._id} href={assetUrl(f.url)} download target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-ink-700 hover:bg-ink-600 flex items-center gap-3">
-                <span className="text-2xl">📄</span>
-                <div className="flex-1 truncate"><div className="text-sm truncate">{f.name}</div></div>
-              </a>
+              f.url === '[FILE_UNAVAILABLE]' ? (
+                <div key={f._id} className="p-3 rounded-lg bg-ink-700 opacity-50 cursor-not-allowed flex items-center gap-3">
+                  <span className="text-2xl">📄</span>
+                  <div className="flex-1 truncate">
+                    <div className="text-sm truncate">{f.name}</div>
+                    <div className="text-xs text-orange-400">غير متاح</div>
+                  </div>
+                </div>
+              ) : (
+                <a key={f._id} href={assetUrl(f.url)} download target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-ink-700 hover:bg-ink-600 flex items-center gap-3">
+                  <span className="text-2xl">📄</span>
+                  <div className="flex-1 truncate"><div className="text-sm truncate">{f.name}</div></div>
+                </a>
+              )
             ))}
           </div>
         )}
