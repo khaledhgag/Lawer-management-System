@@ -58,7 +58,7 @@ connectDB().then(() => {
     // ابعت رسالة تيليجرام أول ما السيرفر يشتغل
     try {
       const result = await telegram.sendMessage(
-        '✅ازيك يا سيادة المستشار اسلام اشرف العطار  _ انا مساعدك الشخصي '
+        '✅'
       );
       console.log('📩 Telegram startup test:', result);
     } catch (err) {
