@@ -214,6 +214,46 @@ exports.exportPdf = async (req, res, next) => {
   } catch (e) { next(e); }
 };
 
+exports.deleteFile = async (req, res, next) => {
+  try {
+    const { id, fileId } = req.params;
+    const c = await Case.findById(id);
+    if (!c) return res.status(404).json({ message: 'غير موجود' });
+    
+    const file = c.files.id(fileId);
+    if (!file) return res.status(404).json({ message: 'الملف غير موجود' });
+
+    const fileName = file.name;
+    
+    // Delete from Cloudinary if it's a Cloudinary URL
+    if (file.url && file.url.includes('res.cloudinary.com')) {
+      try {
+        const cloudinary = require('../config/cloudinary');
+        // Extract public_id from Cloudinary URL
+        // URL format: https://res.cloudinary.com/[cloud]/image/upload/v[version]/[folder]/[public_id].[ext]
+        const urlParts = file.url.split('/');
+        const publicId = urlParts[urlParts.length - 1].split('.')[0];
+        const folder = urlParts[urlParts.length - 2];
+        const fullPublicId = `${folder}/${publicId}`;
+        
+        await cloudinary.uploader.destroy(fullPublicId);
+        console.log('[CASE-EVENT] 🗑️  Deleted from Cloudinary:', fullPublicId);
+      } catch (cloudErr) {
+        console.warn('[CASE-EVENT] ⚠️  Failed to delete from Cloudinary:', cloudErr.message);
+        // Continue anyway - file record will be deleted from DB
+      }
+    }
+
+    c.files.id(fileId).deleteOne();
+    await c.save();
+
+    console.log('[CASE-EVENT] 📄 File deleted from case:', c.caseNumber, fileName);
+    await sendOfficeAlert(telegram.formatSystemAlertMessage(`تم حذف ملف من القضية ${c.caseNumber}`, fileName));
+    
+    res.json(c);
+  } catch (e) { next(e); }
+};
+
 exports.remove = async (req, res, next) => {
   try {
     await Case.findByIdAndDelete(req.params.id);

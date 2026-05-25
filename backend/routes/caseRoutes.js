@@ -15,4 +15,5 @@ r.put('/:id', c.update);
 r.delete('/:id', c.remove);
 r.post('/:id/updates', c.addUpdate);
 r.post('/:id/files', upload.single('file'), c.addFile);
+r.delete('/:id/files/:fileId', c.deleteFile);
 module.exports = r;

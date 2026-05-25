@@ -31,7 +31,7 @@ export function formatCaseUpdateMessage(c, update) {
       ? `الجلسة القادمة: ${new Date(c.nextSessionDate).toLocaleDateString('ar-EG')}`
       : null,
     '',
-    'مع تحيات مكتب المحاماة',
+    'مع تحيات مكتب المستشار إسلام أشرف العطار للمحاماة والاستشارات القانونية',
   ].filter(Boolean).join('\n');
 }
 
@@ -52,15 +52,24 @@ export function formatNewCaseMessage({ clientName, credentials, trackUrl }) {
     `مرحباً ${clientName}،`,
     'تم فتح قضيتك لدينا. بيانات الدخول والمتابعة:',
     '',
-    `رقم القضية: ${caseNumber}`,
-    `كود التتبع: ${trackingCode}`,
-    `اسم المستخدم: ${username}`,
-    `كلمة المرور: ${password}`,
+    '━━━━━━━━━━━━━━━━━━━━━━━',
+    `📌 رقم القضية:`,
+    `\`${caseNumber}\``,
+    '',
+    `📌 كود التتبع:`,
+    `\`${trackingCode}\``,
+    '',
+    `📌 اسم المستخدم:`,
+    `\`${username}\``,
+    '',
+    `📌 كلمة المرور:`,
+    `\`${password}\``,
+    '━━━━━━━━━━━━━━━━━━━━━━━',
   ];
   if (trackUrl) {
-    lines.push('', `متابعة القضية: ${trackUrl}`);
+    lines.push('', `🔗 متابعة القضية:`, `\`${trackUrl}\``);
   }
-  lines.push('', 'مع تحيات مكتب المحاماة');
+  lines.push('', 'مع تحيات مكتب المستشار إسلام أشرف العطار للمحاماة والاستشارات القانونية');
   return lines.join('\n');
 }
 
@@ -76,6 +85,6 @@ export function formatReplyPreview(c, reply) {
     `الوقت: ${reply.appointmentTime || '—'}`,
     reply.fees ? `الرسوم: ${reply.fees} جنيه` : null,
     '',
-    'مع تحيات مكتب المحاماة',
+    'مع تحيات مكتب المستشار إسلام أشرف العطار للمحاماة والاستشارات القانونية',
   ].filter((x) => x !== null).join('\n');
 }

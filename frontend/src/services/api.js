@@ -62,6 +62,7 @@ export const Cases = {
   addUpdate: (id, d) => api.post(`/cases/${id}/updates`, d).then((r) => r.data),
   addFile: (id, fd) =>
     api.post(`/cases/${id}/files`, fd, { headers: { 'Content-Type': 'multipart/form-data' } }).then((r) => r.data),
+  deleteFile: (id, fileId) => api.delete(`/cases/${id}/files/${fileId}`).then((r) => r.data),
   exportPdf: async (id, filename = 'case.pdf') => {
     const r = await api.get(`/cases/${id}/pdf`, { responseType: 'blob' });
     const url = URL.createObjectURL(r.data);

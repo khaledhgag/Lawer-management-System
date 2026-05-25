@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Cases } from '../../services/api';
 import { buildWhatsAppLink, formatNewCaseMessage, openWhatsApp } from '../../utils/whatsapp';
+import CopyButton from '../../components/CopyButton';
 
 const TYPES = ['مدني', 'جنائي', 'أسرة', 'شركات', 'عقارات', 'أخرى'];
 const EMPTY_CASE = { caseNumber: '', caseType: 'مدني', court: '', nextSessionDate: '', currentStatus: 'قيد المراجعة', notes: '' };
@@ -113,15 +114,27 @@ export default function NewCase() {
         <div className="space-y-2 bg-ink-700 p-4 rounded-lg font-mono text-sm">
           {!creds.existingClient && (
             <>
-              <div>اسم المستخدم: <b className="text-gold">{creds.username}</b></div>
-              <div>كلمة المرور: <b className="text-gold">{creds.password}</b></div>
+              <div className="flex items-center justify-between">
+                <span>اسم المستخدم: <b className="text-gold">{creds.username}</b></span>
+                <CopyButton text={creds.username} label="📋" className="text-gold hover:text-white text-lg" />
+              </div>
+              <div className="flex items-center justify-between">
+                <span>كلمة المرور: <b className="text-gold">{creds.password}</b></span>
+                <CopyButton text={creds.password} label="📋" className="text-gold hover:text-white text-lg" />
+              </div>
             </>
           )}
           {creds.existingClient && (
             <div className="text-white/50 text-xs">العميل لديه حساب مسبق — لا توجد كلمة مرور جديدة</div>
           )}
-          <div>رقم القضية: <b className="text-gold">{creds.caseNumber}</b></div>
-          <div>كود التتبع: <b className="text-gold">{creds.trackingCode}</b></div>
+          <div className="flex items-center justify-between">
+            <span>رقم القضية: <b className="text-gold">{creds.caseNumber}</b></span>
+            <CopyButton text={creds.caseNumber} label="📋" className="text-gold hover:text-white text-lg" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span>كود التتبع: <b className="text-gold">{creds.trackingCode}</b></span>
+            <CopyButton text={creds.trackingCode} label="📋" className="text-gold hover:text-white text-lg" />
+          </div>
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
           {!done.isExisting && (

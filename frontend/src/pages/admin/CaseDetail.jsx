@@ -55,6 +55,17 @@ export default function CaseDetail() {
     }
   };
 
+  const deleteFile = async (fileId, fileName) => {
+    if (!window.confirm(`حذف الملف: ${fileName}؟`)) return;
+    try {
+      await Cases.deleteFile(id, fileId);
+      toast.success('تم حذف الملف');
+      load();
+    } catch {
+      toast.error('فشل الحذف');
+    }
+  };
+
   const saveCase = async (e) => {
     e.preventDefault();
     try {
@@ -180,18 +191,24 @@ export default function CaseDetail() {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
             {c.files.map((f) => (
               f.url === '[FILE_UNAVAILABLE]' ? (
-                <div key={f._id} className="p-3 rounded-lg bg-ink-700 opacity-50 cursor-not-allowed flex items-center gap-3">
-                  <span className="text-2xl">📄</span>
-                  <div className="flex-1 truncate">
-                    <div className="text-sm truncate">{f.name}</div>
-                    <div className="text-xs text-orange-400">غير متاح</div>
+                <div key={f._id} className="p-3 rounded-lg bg-ink-700 opacity-50 cursor-not-allowed flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="text-2xl">📄</span>
+                    <div className="flex-1 truncate min-w-0">
+                      <div className="text-sm truncate">{f.name}</div>
+                      <div className="text-xs text-orange-400">غير متاح</div>
+                    </div>
                   </div>
+                  <button type="button" onClick={() => deleteFile(f._id, f.name)} className="text-white/40 hover:text-red-500 text-xl flex-shrink-0">🗑️</button>
                 </div>
               ) : (
-                <a key={f._id} href={assetUrl(f.url)} download target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-ink-700 hover:bg-ink-600 flex items-center gap-3">
-                  <span className="text-2xl">📄</span>
-                  <div className="flex-1 truncate"><div className="text-sm truncate">{f.name}</div></div>
-                </a>
+                <div key={f._id} className="p-3 rounded-lg bg-ink-700 hover:bg-ink-600 flex items-center justify-between gap-3 group">
+                  <a href={assetUrl(f.url)} download target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="text-2xl">📄</span>
+                    <div className="flex-1 truncate min-w-0"><div className="text-sm truncate">{f.name}</div></div>
+                  </a>
+                  <button type="button" onClick={() => deleteFile(f._id, f.name)} className="text-white/40 group-hover:text-red-500 text-xl flex-shrink-0">🗑️</button>
+                </div>
               )
             ))}
           </div>
