@@ -189,7 +189,7 @@ exports.addFile = async (req, res, next) => {
     if (!req.file) return res.status(400).json({ message: 'لا يوجد ملف' });
     c.files.push({
       name: req.file.originalname,
-      url: `/uploads/${req.file.filename}`,
+      url: req.file.path,
       type: req.file.mimetype,
       size: req.file.size,
     });
