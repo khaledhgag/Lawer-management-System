@@ -11,9 +11,12 @@ async function sendMessage(text) {
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
   if (!isTelegramEnabled()) {
-    console.log('[telegram] skipped because Telegram is not configured');
+    console.log('[TELEGRAM] ❌ NOT CONFIGURED - Missing token or chat ID');
     return { sent: false, skipped: true, error: 'Telegram not configured' };
   }
+
+  console.log('[TELEGRAM] 📤 Attempting to send message to chat', chatId);
+  console.log('[TELEGRAM] 📝 Message preview:', text.substring(0, 100));
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
   const res = await fetch(url, {
@@ -29,10 +32,11 @@ async function sendMessage(text) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data.ok === false) {
-    console.log('[telegram api error]', data);
+    console.log('[TELEGRAM] ❌ ERROR:', data.description || res.statusText);
     return { sent: false, error: data.description || res.statusText, data };
   }
 
+  console.log('[TELEGRAM] ✅ Message sent successfully! ID:', data.result.message_id);
   return { sent: true, data };
 }
 

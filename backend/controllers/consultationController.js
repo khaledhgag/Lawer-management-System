@@ -26,7 +26,10 @@ exports.create = async (req, res, next) => {
       whatsappOffice = { link: wa.buildLink(officePhone, alertText) };
     }
     if (process.env.TELEGRAM_AUTO_NOTIFY_OFFICE === 'true') {
+      console.log('[CONSULTATION-EVENT] 📨 New consultation received:', c.fullName);
       await telegram.sendMessage(alertText);
+    } else {
+      console.log('[CONSULTATION-EVENT] ⚠️  Telegram notifications disabled');
     }
 
     res.status(201).json({ ...c.toObject(), whatsappOffice });

@@ -55,8 +55,15 @@ exports.get = async (req, res, next) => {
 };
 
 async function sendOfficeAlert(message) {
-  if (process.env.TELEGRAM_AUTO_NOTIFY_OFFICE !== 'true') return null;
-  return telegram.sendMessage(message);
+  if (process.env.TELEGRAM_AUTO_NOTIFY_OFFICE !== 'true') {
+    console.log('[CASE-EVENT] ⚠️  Telegram notifications disabled');
+    return null;
+  }
+  console.log('[CASE-EVENT] 📤 Sending telegram alert...');
+  const result = await telegram.sendMessage(message);
+  if (result.sent) console.log('[CASE-EVENT] ✅ Alert sent');
+  else console.log('[CASE-EVENT] ❌ Failed:', result.error);
+  return result;
 }
 
 exports.create = async (req, res, next) => {
@@ -97,6 +104,7 @@ exports.create = async (req, res, next) => {
       ? `الجلـسة بتاريخ ${new Date(c.nextSessionDate).toLocaleDateString('ar-EG')} ${new Date(c.nextSessionDate).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`
       : 'لم يتم تحديد موعد جلسة بعد';
     const msg = telegram.formatSystemAlertMessage(`قضية جديدة: ${caseNumber}`, createDetails);
+    console.log('[CASE-EVENT] 📊 New case created:', caseNumber);
     await sendOfficeAlert(msg);
 
     res.status(201).json({ case: c, credentials });
@@ -133,6 +141,7 @@ exports.update = async (req, res, next) => {
     if (patch.internalNotes) changes.push(`ملاحظات داخلية جديدة`);
 
     if (changes.length) {
+      console.log('[CASE-EVENT] 😄 Case updated:', c.caseNumber, 'Changes:', changes);
       const msg = telegram.formatSystemAlertMessage(`تحديث على القضية ${c.caseNumber}`, changes.join('\n'));
       await sendOfficeAlert(msg);
     }
@@ -158,6 +167,7 @@ exports.addUpdate = async (req, res, next) => {
 
     const msg = `تحديث جديد على قضيتك: ${title}`;
     await Notification.create({ client: c.client._id, case: c._id, message: msg });
+    console.log('[CASE-EVENT] 📌 Case update added:', c.caseNumber, title);
     await sendOfficeAlert(telegram.formatSystemAlertMessage(`تحديث على القضية ${c.caseNumber}`, `${msg}${notes ? `\n\n${notes}` : ''}`));
 
     if (c.client?.email) {
@@ -190,6 +200,7 @@ exports.addFile = async (req, res, next) => {
       case: c._id,
       message: fileMsg,
     });
+    console.log('[CASE-EVENT] 📄 File added to case:', c.caseNumber, req.file.originalname);
     await sendOfficeAlert(telegram.formatSystemAlertMessage(`ملف جديد على القضية ${c.caseNumber}`, fileMsg));
     res.json(c);
   } catch (e) { next(e); }

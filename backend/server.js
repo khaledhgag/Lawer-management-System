@@ -9,6 +9,7 @@ const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 const { startSessionReminderJob } = require('./services/sessionReminderService');
+const telegram = require('./services/telegramService'); // <-- أضفنا دي
 
 // Middlewares
 const allowedOrigins = [
@@ -27,6 +28,7 @@ app.use(cors({
   },
   credentials: true
 }));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
@@ -43,13 +45,27 @@ app.use('/api/calendar', require('./routes/calendarRoutes'));
 app.use('/api/files', require('./routes/fileRoutes'));
 
 app.get('/', (_, res) => res.json({ ok: true, name: 'Lawyer API' }));
+
 app.use((req, res) => res.status(404).json({ message: 'Not found' }));
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+
 connectDB().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(`✅ Server on http://localhost:${PORT}`);
+
+    // ابعت رسالة تيليجرام أول ما السيرفر يشتغل
+    try {
+      const result = await telegram.sendMessage(
+        '✅ المشروع اشتغل بنجاح على Render و Telegram شغال!'
+      );
+      console.log('📩 Telegram startup test:', result);
+    } catch (err) {
+      console.error('❌ Telegram startup error:', err.message);
+    }
+
+    // شغّل session reminders
     startSessionReminderJob();
   });
 });
