@@ -20,7 +20,7 @@ export default function Navbar() {
       <NavLink to="/" className={item} end onClick={() => setOpen(false)}>الرئيسية</NavLink>
       <NavLink to="/track" className={item} onClick={() => setOpen(false)}>متابعة قضية</NavLink>
       <NavLink to="/book" className={item} onClick={() => setOpen(false)}>حجز استشارة</NavLink>
-      <NavLink to="/course" className={item} onClick={() => setOpen(false)}>التسجيل في الدورة</NavLink>
+      <NavLink to="/course" className={item} onClick={() => setOpen(false)}>التسجيل في الدورات التدريبية</NavLink>
       <NavLink to="/contact" className={item} onClick={() => setOpen(false)}>اتصل بنا</NavLink>
     </>
   );
