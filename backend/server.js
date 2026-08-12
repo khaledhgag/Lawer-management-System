@@ -38,6 +38,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/cases', require('./routes/caseRoutes'));
 app.use('/api/track', require('./routes/trackRoutes'));
 app.use('/api/consultations', require('./routes/consultationRoutes'));
+app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/calendar', require('./routes/calendarRoutes'));

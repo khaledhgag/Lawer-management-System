@@ -8,6 +8,7 @@ import TrackLogin from './pages/client/TrackLogin.jsx';
 import CaseView from './pages/client/CaseView.jsx';
 import MyCasesList from './pages/client/MyCasesList.jsx';
 import BookConsultation from './pages/public/BookConsultation.jsx';
+import CourseRegister from './pages/public/CourseRegister.jsx';
 import Contact from './pages/public/Contact.jsx';
 import TrackForgot from './pages/client/TrackForgot.jsx';
 import ChangePassword from './pages/client/ChangePassword.jsx';
@@ -18,6 +19,7 @@ import CasesList from './pages/admin/CasesList.jsx';
 import CaseDetail from './pages/admin/CaseDetail.jsx';
 import NewCase from './pages/admin/NewCase.jsx';
 import Inbox from './pages/admin/Inbox.jsx';
+import CourseRegistrations from './pages/admin/CourseRegistrations.jsx';
 import Settings from './pages/admin/Settings.jsx';
 
 import NotFound from './pages/public/NotFound.jsx';
@@ -35,6 +37,7 @@ export default function App() {
         <Route path="/track/case/:id" element={<CaseView />} />
         <Route path="/track/case" element={<CaseView />} />
         <Route path="/book" element={<BookConsultation />} />
+        <Route path="/course" element={<CourseRegister />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/track/forgot" element={<TrackForgot />} />
         <Route path="/track/password" element={<ChangePassword />} />
@@ -50,6 +53,7 @@ export default function App() {
         <Route path="cases/new" element={<NewCase />} />
         <Route path="cases/:id" element={<CaseDetail />} />
         <Route path="inbox" element={<Inbox />} />
+        <Route path="courses" element={<CourseRegistrations />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="settings" element={<Settings />} />
       </Route>

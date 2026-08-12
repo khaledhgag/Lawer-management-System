@@ -13,5 +13,8 @@ function generateCredentials(clientName = 'client') {
 function consultationRequestNumber() {
   return `CON-${Date.now().toString().slice(-8)}`;
 }
+function courseRequestNumber() {
+  return `CRS-${Date.now().toString().slice(-8)}`;
+}
 
-module.exports = { randomCode, generateCredentials, consultationRequestNumber };
+module.exports = { randomCode, generateCredentials, consultationRequestNumber, courseRequestNumber };

@@ -2,6 +2,23 @@ function formatSystemAlertMessage(title, details = '') {
   return [title, details].filter(Boolean).join('\n\n');
 }
 
+function formatNewCourseRegistrationMessage(r) {
+  const year = r.academicYear === 'خريج'
+    ? `خريج${r.graduationYear ? ` — دفعة ${r.graduationYear}` : ''}`
+    : r.academicYear;
+  return [
+    '📚 تسجيل جديد في الدورة',
+    r.requestNumber ? `رقم الطلب: ${r.requestNumber}` : null,
+    '',
+    `الاسم: ${r.fullName}`,
+    `كلية الحقوق - جامعة: ${r.university}`,
+    `السنة الدراسية / خريج دفعة: ${year}`,
+    `العنوان: ${r.address}`,
+    `رقم التليفون: ${r.phone}`,
+    r.notes ? `ملاحظات: ${r.notes}` : null,
+  ].filter((x) => x !== null).join('\n');
+}
+
 function isTelegramEnabled() {
   return Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID);
 }
@@ -42,6 +59,7 @@ async function sendMessage(text) {
 
 module.exports = {
   formatSystemAlertMessage,
+  formatNewCourseRegistrationMessage,
   sendMessage,
   isTelegramEnabled,
 };

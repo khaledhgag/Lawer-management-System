@@ -3,6 +3,9 @@ const map = {
   replied:   { t:'تم الرد',       c:'bg-blue-500/15 text-blue-300' },
   booked:    { t:'تم الحجز',      c:'bg-emerald-500/15 text-emerald-300' },
   completed: { t:'مكتملة',        c:'bg-gold/15 text-gold' },
+  contacted: { t:'تم التواصل',    c:'bg-blue-500/15 text-blue-300' },
+  confirmed: { t:'مؤكد',          c:'bg-emerald-500/15 text-emerald-300' },
+  cancelled: { t:'ملغي',          c:'bg-red-500/15 text-red-300' },
 };
 export default function StatusBadge({ status }) {
   const x = map[status] || { t: status, c: 'bg-white/10 text-white' };

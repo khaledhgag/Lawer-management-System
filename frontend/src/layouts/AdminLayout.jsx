@@ -4,6 +4,7 @@ const items = [
   { to:'/admin',          label:'لوحة التحكم', icon:'📊', end:true },
   { to:'/admin/cases',    label:'القضايا',     icon:'📁' },
   { to:'/admin/inbox',    label:'الاستشارات',  icon:'📨' },
+  { to:'/admin/courses',  label:'تسجيلات الدورة', icon:'🎓' },
   { to:'/admin/calendar', label:'التقويم',     icon:'📅' },
   { to:'/admin/settings', label:'الإعدادات',   icon:'⚙️' },
 ];

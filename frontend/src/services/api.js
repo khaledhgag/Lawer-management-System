@@ -90,6 +90,14 @@ export const Consultations = {
     api.get(`/consultations/${id}/whatsapp-link`, { params: { target } }).then((r) => r.data),
 };
 
+/** POST/GET /api/courses/... — التسجيل في الدورة */
+export const Courses = {
+  create: (d) => api.post('/courses', d).then((r) => r.data),
+  list: (params = {}) => api.get('/courses', { params }).then((r) => r.data),
+  updateStatus: (id, s) => api.put(`/courses/${id}/status`, { status: s }).then((r) => r.data),
+  remove: (id) => api.delete(`/courses/${id}`).then((r) => r.data),
+};
+
 /** GET/PUT /api/settings */
 export const SettingsAPI = {
   get: () => api.get('/settings').then((r) => r.data),
